@@ -1,0 +1,1325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>US Digital Bank Demo</title>
+
+<style>
+
+
+.dashboard-row{
+display:flex;
+gap:10px;
+overflow-x:auto;
+}
+
+.dashboard-row .card{
+min-width:220px;
+}
+
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#f4f7fc;
+color:#333;
+}
+
+.dark{
+background:#121212;
+color:white;
+}
+
+.page{
+display:none;
+padding:20px;
+}
+
+.active{
+display:block;
+}
+
+button{
+padding:12px 20px;
+border:none;
+border-radius:8px;
+background:#0056d2;
+color:white;
+cursor:pointer;
+margin:5px;
+}
+
+input{
+width:100%;
+padding:12px;
+margin:8px 0;
+border:1px solid #ccc;
+border-radius:8px;
+}
+
+.card{
+background:white;
+padding:20px;
+margin:10px 0;
+border-radius:10px;
+box-shadow:0 2px 8px rgba(0,0,0,0.1);
+}
+
+.dark .card{
+background:#1e1e1e;
+}
+
+.hero{
+text-align:center;
+padding:60px 20px;
+}
+
+.loader-container{
+height:100vh;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+background:#0056d2;
+color:white;
+}
+
+.loader{
+width:60px;
+height:60px;
+border:6px solid white;
+border-top:6px solid transparent;
+border-radius:50%;
+animation:spin 1s linear infinite;
+margin:20px;
+}
+
+@keyframes spin{
+100%{transform:rotate(360deg);}
+}
+
+nav{
+background:#0056d2;
+padding:10px;
+display:flex;
+flex-wrap:wrap;
+justify-content:center;
+}
+
+nav button{
+background:white;
+color:#0056d2;
+}
+
+.progress{
+width:200px;
+height:12px;
+background:white;
+border-radius:20px;
+overflow:hidden;
+}
+
+.bar{
+height:100%;
+background:lime;
+width:0%;
+animation:load 3s forwards;
+}
+
+@keyframes load{
+100%{width:100%;}
+}
+
+@media(max-width:768px){
+button{
+width:100%;
+}
+}
+
+.bottom-nav{
+position:fixed;
+bottom:0;
+left:0;
+width:100%;
+background:white;
+display:flex;
+justify-content:space-around;
+padding:10px;
+box-shadow:0 -2px 10px rgba(0,0,0,0.2);
+}
+
+.nav-item{
+text-align:center;
+font-size:22px;
+cursor:pointer;
+color:#0056d2;
+}
+
+.nav-item p{
+font-size:11px;
+margin-top:5px;
+font-weight:300;
+color:#666;
+}
+
+.profile-header{
+background:linear-gradient(
+135deg,
+#003c8f,
+#0056d2
+);
+color:white;
+padding:25px;
+border-radius:20px;
+text-align:center;
+margin-bottom:20px;
+}
+
+.profile-pic{
+width:100px;
+height:100px;
+border-radius:50%;
+border:4px solid white;
+object-fit:cover;
+margin-bottom:10px;
+}
+
+details{
+margin-top:10px;
+}
+
+summary{
+background:#0056d2;
+color:white;
+padding:12px;
+border-radius:10px;
+cursor:pointer;
+}
+
+#transactions{
+margin-top:10px;
+padding-left:20px;
+}
+
+#transactions li{
+padding:8px;
+border-bottom:1px solid #ddd;
+}
+
+</style>
+
+</head>
+<body>
+
+<!-- SPLASH -->
+
+<div id="splash" class="loader-container">
+
+<h1>LLOYD'S BANK</h1>
+
+<div class="loader"></div>
+
+<div class="progress">
+<div class="bar"></div>
+</div>
+
+<p style="margin-top:20px;">
+Secure Banking Experience
+</p>
+
+</div>
+
+<!-- WELCOME -->
+
+<div id="welcome" class="page">
+
+<div class="hero">
+
+<h1>Welcome To LLOYD'S BANK</h1>
+
+<p>
+Modern Banking for Everyone
+</p>
+
+<br>
+
+<button onclick="showPage('login')">
+Sign In
+</button>
+
+<button onclick="showPage('register')">
+Open Account
+</button>
+
+</div>
+
+<div class="card">
+<h2>Banking Services</h2>
+<p>Savings Accounts</p>
+<p>Transfers</p>
+<p>Debit Cards</p>
+<p>Notifications</p>
+</div>
+
+<div class="card">
+<h2>Security Features</h2>
+<p>Two Factor Authentication</p>
+<p>Encryption</p>
+<p>Activity Monitoring</p>
+</div>
+
+<button onclick="toggleDarkMode()">
+Toggle Dark Mode
+</button>
+
+</div>
+
+<!-- REGISTER -->
+
+<div id="register" class="page">
+
+<h2>Open Account</h2>
+
+<input id="fname" placeholder="First Name">
+
+<input id="mname" placeholder="Middle Name">
+
+<input id="lname" placeholder="Last Name">
+
+<input id="ownerUsername"
+placeholder="Owner Username">
+
+<input id="email" placeholder="Email">
+
+<input id="phone" placeholder="Phone Number">
+
+<h2>Account Type</h2>
+
+
+<select id="accountType" onchange="toggleJointFields()">
+
+<option value="single">
+Single Account
+</option>
+
+<option value="joint">
+Joint Account
+</option>
+
+</select>
+
+<div id="jointSection" style="display:none;">
+
+<input id="jointFirstName"
+placeholder="Joint Holder First Name">
+
+<input id="jointMiddleName"
+placeholder="Joint Holder Middle Name">
+
+<input id="jointLastName"
+placeholder="Joint Holder Last Name">
+
+<input id="jointUsername"
+placeholder="Joint Username">
+
+<input id="jointPhone"
+placeholder="Joint Holder Phone Number">
+
+</div>
+
+
+<input id="address" placeholder="Address">
+
+<input type="date" id="dob">
+
+<input type="password" id="password" placeholder="Password">
+
+<input type="password" id="confirm" placeholder="Confirm Password">
+
+<label>
+<input type="checkbox" id="terms">
+Accept Terms & Conditions
+</label>
+
+<br><br>
+
+<button onclick="registerUser()">
+Create Account
+</button>
+
+<button onclick="showPage('welcome')">
+Back
+</button>
+
+</div>
+
+<!-- LOGIN -->
+
+<div id="login" class="page">
+
+<h2>Secure Login</h2>
+
+<input id="loginUsername"
+placeholder="Username">
+
+<input type="password"
+id="loginPass"
+placeholder="Password">
+
+<label>
+<input type="checkbox">
+Remember Me
+</label>
+
+<br>
+
+
+<button onclick="loginUser()">
+Login
+</button>
+
+<p>
+Forgot Password?
+</p>
+
+<button onclick="showPage('welcome')">
+Back
+</button>
+
+</div>
+
+<!-- TRANSFER PAGE -->
+
+<div id="transferPage" class="page">
+
+<h2>💸 Transfer Money</h2>
+
+<div class="card">
+
+<input
+id="receiverName"
+placeholder="Receiver Name">
+
+<input
+id="receiverBank"
+placeholder="Bank Name">
+
+<input
+id="receiverAccount"
+placeholder="Account Number">
+
+<input
+id="transferAmount"
+placeholder="Amount">
+
+<button onclick="submitTransfer()">
+Send Transfer
+</button>
+
+<br><br>
+
+<button onclick="showPage('dashboard')">
+Back To Dashboard
+</button>
+
+</div>
+
+</div>
+
+<!-- DASHBOARD -->
+
+
+<div id="dashboard" class="page">
+
+
+<div class="bottom-nav">
+
+<div class="nav-item" onclick="showPage('dashboard')">
+🏠
+<p>Home</p>
+</div>
+
+<div class="nav-item"
+onclick="showPage('transferPage')">
+💸
+<p>Transfer</p>
+</div>
+
+<div class="nav-item" onclick="showPage('deposit')">
+🏦
+<p>Deposit</p>
+</div>
+
+<div class="nav-item" onclick="showPage('withdraw')">
+💵
+<p>Withdraw</p>
+</div>
+
+<div class="nav-item" onclick="showPage('notifications')">
+🔔
+<p>Alerts</p>
+</div>
+
+<div class="nav-item" onclick="logout()">
+🚪
+<p>Logout</p>
+</div>
+
+
+</div>
+
+<div class="profile-header">
+
+<img
+id="profilePreview"
+src="https://via.placeholder.com/100"
+class="profile-pic">
+
+<label for="profileUpload" class="plus-btn">
++
+</label>
+
+<h2 id="displayUser">
+Owner Name
+</h2>
+
+<p id="jointDisplay"></p>
+
+<input
+type="file"
+id="profileUpload"
+accept="image/*"
+hidden>
+
+</div>
+
+
+<p>
+Premium Banking Customer
+</p>
+
+
+<div class="dashboard-row">
+
+
+<div class="card" style="text-align:center;">
+
+<div style="font-size:40px;">
+💰
+</div>
+
+<p style="font-weight:normal;">
+Current Balance
+</p>
+
+<h2 id="currentBalance">
+********
+</h2>
+
+<button onclick="toggleBalance()">
+👁️ Show / Hide
+</button>
+
+</div>
+
+<div class="card" style="text-align:center;">
+
+<div style="font-size:40px;">
+🏦
+</div>
+
+<p style="font-weight:normal;">
+Savings Balance
+</p>
+
+<h2 id="savingBalance">
+********
+</h2>
+
+</div>
+
+<div class="card" style="text-align:center;">
+
+<div style="font-size:40px;">
+🆔
+</div>
+
+<p style="font-weight:normal;">
+Account Number
+</p>
+
+<h2 id="accountNumber">
+********
+</h2>
+
+</div>
+
+<div class="card" style="text-align:center;">
+
+<div style="font-size:40px;">
+📜
+</div>
+
+<p style="font-weight:normal;">
+Transaction History
+</p>
+
+<details>
+
+<summary>
+📜 Transaction History
+</summary>
+
+<ul id="transactions">
+
+<li>Deposit +$5,000</li>
+
+<li>Transfer -$300</li>
+
+<li>Deposit +$1,200</li>
+
+<li>Withdrawal -$500</li>
+
+<li>Transfer -$150</li>
+
+</ul>
+
+</details>
+
+</div>
+</div>
+</div>
+
+<div id="transfer" class="page">
+
+<h2>Transfer Money</h2>
+
+
+
+</div>
+
+
+<div id="deposit" class="page">
+
+<h2>🏦 Deposit Money</h2>
+
+<div class="card">
+
+<input
+id="depositSource"
+placeholder="Deposit Source">
+
+<input
+id="depositReference"
+placeholder="Reference Number">
+
+<input
+id="depositAmount"
+placeholder="Amount">
+
+<button onclick="submitDeposit()">
+Submit Deposit
+</button>
+
+<br><br>
+
+<button onclick="showPage('dashboard')">
+Back To Dashboard
+</button>
+
+
+
+</div>
+
+</div>
+
+
+<div id="withdraw" class="page">
+
+<h2>Withdraw</h2>
+
+<input id="withdrawAmount"
+placeholder="Amount">
+
+<button onclick="submitWithdraw()">
+Submit Withdrawal
+</button>
+
+<br><br>
+
+<button onclick="showPage('dashboard')">
+Back To Dashboard
+</button>
+
+
+
+</div>
+
+
+</div>
+
+<div id="notifications" class="page">
+
+<h2>Notifications</h2>
+
+<ul id="notificationList">
+
+<ul id="notificationList">
+
+<li>👋 Welcome to Lloyd's Bank. Thank you for banking with us.</li>
+
+<li>🔒 Security Reminder: Never share your password or OTP with anyone.</li>
+
+<li>💳 Your debit card services are active and ready to use.</li>
+
+<li>🏦 Deposit requests are currently reviewed within 24 hours.</li>
+
+<li>💸 Transfer requests may show as Pending during maintenance.</li>
+
+<li>📞 Customer Support is available Monday to Friday, 8:00 AM - 6:00 PM.</li>
+
+<li>🎁 Thank you for being a valued customer of Lloyd's Bank.</li>
+
+<li>⚠️ Please ensure your contact information is always up to date.</li>
+
+<li>📈 Check your transaction history regularly for account activity.</li>
+
+<li>✅ Your account is protected by our secure banking systems.</li>
+
+</ul>
+
+</ul>
+
+<br><br>
+
+<button onclick="showPage('dashboard')">
+Back To Dashboard
+</button>
+
+
+
+</div>
+
+
+</div>
+
+<script>
+
+setTimeout(()=>{
+document.getElementById("splash").style.display="none";
+showPage("welcome");
+},3000);
+
+function showPage(id){
+
+document.querySelectorAll(".page")
+.forEach(p=>p.classList.remove("active"));
+
+document.getElementById(id)
+.classList.add("active");
+
+}
+
+function toggleDarkMode(){
+
+document.body.classList.toggle("dark");
+
+}
+
+function registerUser(){
+let first =
+document.getElementById("fname").value.trim();
+
+let ownerUsername =
+document.getElementById(
+"ownerUsername"
+).value.trim();
+
+let jointUsername =
+document.getElementById(
+"jointUsername"
+).value.trim();
+
+let middle =
+document.getElementById("mname").value.trim();
+
+let last =
+document.getElementById("lname").value.trim();
+
+let phone =
+document.getElementById("phone").value.trim();
+
+let password =
+document.getElementById("password").value.trim();
+
+let confirm =
+document.getElementById("confirm").value.trim();
+
+let terms =
+document.getElementById("terms").checked;
+
+if(phone===""){
+alert("Enter phone number");
+return;
+}
+
+if(password===""){
+alert("Enter password");
+return;
+}
+
+if(password!==confirm){
+alert("Passwords do not match");
+return;
+}
+
+if(!terms){
+alert("Accept Terms & Conditions");
+return;
+}
+
+localStorage.setItem("firstName", first);
+
+localStorage.setItem("middleName", middle);
+
+localStorage.setItem("lastName", last);
+
+localStorage.setItem(
+"ownerUsername",
+ownerUsername.toLowerCase()
+);
+
+localStorage.setItem(
+"jointUsername",
+jointUsername.toLowerCase()
+);
+localStorage.setItem(
+"jointFirstName",
+document.getElementById("jointFirstName").value
+);
+
+localStorage.setItem(
+"jointMiddleName",
+document.getElementById("jointMiddleName").value
+);
+
+localStorage.setItem(
+"jointLastName",
+document.getElementById("jointLastName").value
+);
+
+localStorage.setItem(
+"accountType",
+document.getElementById("accountType").value
+);
+
+localStorage.setItem("demoPhone", phone);
+
+localStorage.setItem("demoPass", password);
+
+alert("Account Created Successfully");
+
+showPage("login");
+
+}
+function loginUser(){
+
+let username =
+document.getElementById("loginUsername").value.trim().toLowerCase();
+
+
+let pass =
+document.getElementById("loginPass").value.trim();
+
+let ownerUser =
+(localStorage.getItem("ownerUsername") || "")
+.toLowerCase();
+
+let jointUser =
+(localStorage.getItem("jointUsername") || "")
+.toLowerCase();
+
+let savedPass =
+localStorage.getItem("demoPass");
+
+if(
+
+(
+username===ownerUser ||
+username===jointUser
+)
+
+&&
+
+pass===savedPass
+
+)
+
+{
+let first =
+localStorage.getItem("firstName");
+
+let middle =
+localStorage.getItem("middleName");
+
+let last =
+localStorage.getItem("lastName");
+
+let fullName =
+first;
+
+if(middle && middle !== ""){
+fullName += " " + middle;
+}
+
+fullName += " " + last;
+
+document.getElementById(
+"displayUser"
+).innerHTML =
+"Owner: " + fullName;
+
+let accountType =
+localStorage.getItem("accountType");
+
+if(accountType=="joint"){
+
+let jFirst =
+localStorage.getItem("jointFirstName");
+
+let jMiddle =
+localStorage.getItem("jointMiddleName");
+
+let jLast =
+localStorage.getItem("jointLastName");
+
+let jointName = jFirst;
+
+if(jMiddle && jMiddle!=""){
+jointName += " " + jMiddle;
+}
+
+jointName += " " + jLast;
+
+document.getElementById(
+"jointDisplay"
+).innerHTML =
+"Joint Holder: " + jointName;
+
+}else{
+
+document.getElementById(
+"jointDisplay"
+).innerHTML = "";
+
+}
+
+localStorage.setItem(
+"lastLogin",
+new Date().toLocaleString()
+);
+
+showPage("dashboard");
+
+}
+else{
+
+alert("Invalid Username or Password");
+
+}
+function loadTransactions(){
+
+let list =
+document.getElementById(
+"transactions"
+);
+
+let transactions =
+JSON.parse(
+localStorage.getItem("transactions")
+) || [];
+
+if(transactions.length==0){
+
+list.innerHTML =
+"<li>No Transactions Yet</li>";
+
+return;
+
+}
+
+list.innerHTML="";
+
+transactions.forEach(function(item){
+
+let li =
+document.createElement("li");
+
+li.innerHTML=item;
+
+list.appendChild(li);
+
+});
+
+}
+}function logout(){
+
+alert("Session Ended");
+
+showPage("welcome");
+
+}
+
+function showDashboard(){
+
+loadTransactions();
+
+showPage("dashboard");
+
+}
+
+function toggleJointFields(){
+
+let type =
+document.getElementById("accountType").value;
+
+if(type=="joint"){
+
+document.getElementById(
+"jointSection"
+).style.display="block";
+
+}else{
+
+document.getElementById(
+"jointSection"
+).style.display="none";
+
+}
+
+}document
+.getElementById("profileUpload")
+.addEventListener("change",function(){
+
+let file=this.files[0];
+
+if(file){
+
+let reader=new FileReader();
+
+reader.onload=function(e){
+
+document.getElementById(
+"profilePreview"
+).src=e.target.result;
+
+}
+
+reader.readAsDataURL(file);
+
+}
+
+});
+
+
+
+
+let balanceVisible = false;
+
+function toggleBalance(){
+
+let current =
+document.getElementById("currentBalance");
+
+let savings =
+document.getElementById("savingBalance");
+
+let account =
+document.getElementById("accountNumber");
+
+if(balanceVisible){
+
+current.innerHTML = "********";
+savings.innerHTML = "********";
+account.innerHTML = "********";
+
+balanceVisible = false;
+
+}else{
+
+current.innerHTML = "$2,900,000.00";
+savings.innerHTML = "$8,900.00";
+account.innerHTML = "USD-456789123";
+
+balanceVisible = true;
+
+}
+
+}
+
+
+function submitDeposit(){
+
+let source =
+document.getElementById(
+"depositSource"
+).value.trim();
+
+let reference =
+document.getElementById(
+"depositReference"
+).value.trim();
+
+let amount =
+document.getElementById(
+"depositAmount"
+).value.trim();
+
+if(source==""){
+
+alert("Enter Deposit Source");
+return;
+
+}
+
+if(reference==""){
+
+alert("Enter Reference Number");
+return;
+
+}
+
+if(amount==""){
+
+alert("Enter Deposit Amount");
+return;
+
+}
+
+addNotification(
+"🟡 Deposit Pending - $" + amount
+);
+
+let transactions =
+JSON.parse(
+localStorage.getItem("transactions")
+) || [];
+
+transactions.unshift(
+"🟡 Deposit Pending - $" +
+amount +
+" | Ref: " +
+reference
+);
+
+if(transactions.length > 10){
+
+transactions.pop();
+
+}
+
+localStorage.setItem(
+"transactions",
+JSON.stringify(transactions)
+);
+
+loadTransactions();
+
+alert(
+"Deposit Submitted\nStatus: Pending"
+);
+
+}
+
+function submitWithdraw(){
+
+addNotification(
+"Withdrawal Request - Pending"
+);
+
+addTransaction(
+"Withdrawal",
+document.getElementById(
+"withdrawAmount"
+).value
+);
+
+alert(
+"BANK MAINTENANCE\n\nSTATUS: PENDING"
+);
+
+}
+
+function addNotification(text){
+
+let list =
+document.getElementById(
+"notificationList"
+);
+
+if(
+list.innerHTML.includes(
+"No Notifications"
+)
+){
+list.innerHTML="";
+}
+
+let li =
+document.createElement("li");
+
+li.innerHTML=text;
+
+list.prepend(li);
+
+}
+
+function addTransaction(type,amount){
+
+let list =
+document.getElementById(
+"transactions"
+);
+
+if(
+list.innerHTML.includes(
+"No Transactions Yet"
+)
+){
+list.innerHTML="";
+}
+
+let li =
+document.createElement("li");
+
+li.innerHTML=
+type +
+" - $" +
+amount +
+"<br><span style='color:orange;'>Pending</span>";
+
+list.prepend(li);
+
+}
+function pendingTransfer(){
+
+alert(
+"Bank Maintenance In Progress.\nTransaction Status: PENDING"
+);
+
+}
+
+function pendingDeposit(){
+
+alert(
+"Bank Maintenance In Progress.\nDeposit Status: PENDING"
+);
+
+}
+
+function pendingWithdraw(){
+
+alert(
+"Bank Maintenance In Progress.\nWithdrawal Status: PENDING"
+);
+
+}
+function submitTransfer(){
+
+let name =
+document.getElementById(
+"receiverName"
+).value.trim();
+
+let account =
+document.getElementById(
+"receiverAccount"
+).value.trim();
+
+let amount =
+document.getElementById(
+"transferAmount"
+).value.trim();
+
+if(name===""){
+
+alert("Enter Receiver Name");
+return;
+
+}
+
+if(account===""){
+
+alert("Enter Account Number");
+return;
+
+}
+
+if(amount===""){
+
+alert("Enter Amount");
+return;
+
+}
+
+alert(
+"Transfer Submitted\nStatus: Pending"
+);
+
+let list =
+document.getElementById(
+"transactions"
+);
+
+let item =
+document.createElement("li");
+
+item.innerHTML =
+"🟡 Transfer Pending - $" +
+amount +
+" to " +
+name;
+
+list.appendChild(item);
+
+
+
+let transactions =
+JSON.parse(
+localStorage.getItem("transactions")
+) || [];
+
+transactions.unshift(
+"🟡 Transfer Pending - $" +
+amount +
+" to " +
+name
+);
+
+if(transactions.length > 10){
+
+transactions.pop();
+
+}
+
+localStorage.setItem(
+"transactions",
+JSON.stringify(transactions)
+);
+
+loadTransactions();
+
+}
+
+
+</script>
+
+</body>
+</html>
