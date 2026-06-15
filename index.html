@@ -858,7 +858,7 @@ alert("Firebase Error: " + error.message);
 });
   
 }
-function loginUser(){
+async function loginUser(){
 
 let username =
 document.getElementById("loginUsername").value.trim().toLowerCase();
@@ -869,26 +869,43 @@ document.getElementById("loginPass").value.trim();
 let emailForFirebase =
 username + "@lloydsbank.com";
 
-window.signInWithEmailAndPassword(
+try{
+
+await window.signInWithEmailAndPassword(
 window.auth,
 emailForFirebase,
 pass
-)
-.then(() => {
-
-localStorage.setItem(
-"lastLogin",
-new Date().toLocaleString()
 );
+
+const userRef =
+window.doc(window.db,"users",username);
+
+const userSnap =
+await window.getDoc(userRef);
+
+if(userSnap.exists()){
+
+const data = userSnap.data();
+
+document.getElementById("displayUser").innerHTML =
+"Owner: " +
+data.firstName + " " +
+(data.middleName || "") + " " +
+data.lastName;
 
 showPage("dashboard");
 
-})
-.catch((error) => {
+}else{
+
+alert("User profile not found");
+
+}
+
+}catch(error){
 
 alert("Invalid Username or Password");
 
-});
+}
 
 }
   function logout(){
@@ -1304,7 +1321,7 @@ window.db = db;
     window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
 window.doc = doc;
 window.setDoc = setDoc;
-
+window.getDoc = getDoc;
     
 </script>
 
