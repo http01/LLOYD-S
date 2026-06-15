@@ -1318,6 +1318,23 @@ loadTransactions();
 
 }
 
+  <script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+const firebaseConfig = {
+  apiKey: "AIzaSyA5_nqO6qTKVBeEIs2sh-pv4T2JkfaaPL4",
+  authDomain: "lloyd-s-bank-28983.firebaseapp.com",
+  projectId: "lloyd-s-bank-28983",
+  storageBucket: "lloyd-s-bank-28983.firebasestorage.app",
+  messagingSenderId: "606042493635",
+  appId: "1:606042493635:web:8c0063db462ac2958a0876"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+</script>
 
 </script>
 
