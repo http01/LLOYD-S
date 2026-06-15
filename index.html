@@ -828,6 +828,37 @@ alert("Account Created Successfully");
 
 showPage("login");
 
+let emailForFirebase =
+ownerUsername + "@lloydsbank.com";
+
+createUserWithEmailAndPassword(
+window.auth,
+emailForFirebase,
+password
+)
+.then(async (userCredential) => {
+
+await setDoc(
+doc(window.db, "users", ownerUsername),
+{
+firstName: first,
+middleName: middle,
+lastName: last,
+username: ownerUsername,
+phone: phone
+}
+);
+
+alert("Account Created Successfully");
+showPage("login");
+
+})
+.catch((error) => {
+
+alert("Firebase Error: " + error.message);
+
+});
+  
 }
 function loginUser(){
 
