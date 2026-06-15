@@ -831,15 +831,15 @@ showPage("login");
 let emailForFirebase =
 ownerUsername + "@lloydsbank.com";
 
-createUserWithEmailAndPassword(
+window.createUserWithEmailAndPassword(
 window.auth,
 emailForFirebase,
 password
 )
 .then(async (userCredential) => {
 
-await setDoc(
-doc(window.db, "users", ownerUsername),
+await window.setDoc(
+window.doc(window.db, "users", ownerUsername),
 {
 firstName: first,
 middleName: middle,
@@ -891,7 +891,7 @@ alert("Invalid Username or Password");
 });
 
 }
-}function logout(){
+  function logout(){
 
 alert("Session Ended");
 
@@ -1274,6 +1274,11 @@ const db = getFirestore(app);
 window.db = db;
 
     window.signInWithEmailAndPassword = signInWithEmailAndPassword;
+    window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
+window.doc = doc;
+window.setDoc = setDoc;
+
+    
 </script>
 
 </body>
