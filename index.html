@@ -1238,6 +1238,33 @@ JSON.stringify(transactions)
 
 loadTransactions();
 
+}function loadTransactions(){
+
+let list =
+document.getElementById("transactions");
+
+let transactions =
+JSON.parse(
+localStorage.getItem("transactions")
+) || [];
+
+if(transactions.length===0){
+return;
+}
+
+list.innerHTML="";
+
+transactions.forEach(function(item){
+
+let li =
+document.createElement("li");
+
+li.innerHTML=item;
+
+list.appendChild(li);
+
+});
+
 }
 </script>
 
