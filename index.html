@@ -863,92 +863,18 @@ function loginUser(){
 let username =
 document.getElementById("loginUsername").value.trim().toLowerCase();
 
-
 let pass =
 document.getElementById("loginPass").value.trim();
 
-let ownerUser =
-(localStorage.getItem("ownerUsername") || "")
-.toLowerCase();
+let emailForFirebase =
+username + "@lloydsbank.com";
 
-let jointUser =
-(localStorage.getItem("jointUsername") || "")
-.toLowerCase();
-
-let savedPass =
-localStorage.getItem("demoPass");
-
-if(
-
-(
-username===ownerUser ||
-username===jointUser
+window.signInWithEmailAndPassword(
+window.auth,
+emailForFirebase,
+pass
 )
-
-&&
-
-pass===savedPass
-
-)
-
-{
-let first =
-localStorage.getItem("firstName");
-
-let middle =
-localStorage.getItem("middleName");
-
-let last =
-localStorage.getItem("lastName");
-
-let fullName =
-first;
-
-if(middle && middle !== ""){
-fullName += " " + middle;
-}
-
-fullName += " " + last;
-
-document.getElementById(
-"displayUser"
-).innerHTML =
-"Owner: " + fullName;
-
-let accountType =
-localStorage.getItem("accountType");
-
-if(accountType=="joint"){
-
-let jFirst =
-localStorage.getItem("jointFirstName");
-
-let jMiddle =
-localStorage.getItem("jointMiddleName");
-
-let jLast =
-localStorage.getItem("jointLastName");
-
-let jointName = jFirst;
-
-if(jMiddle && jMiddle!=""){
-jointName += " " + jMiddle;
-}
-
-jointName += " " + jLast;
-
-document.getElementById(
-"jointDisplay"
-).innerHTML =
-"Joint Holder: " + jointName;
-
-}else{
-
-document.getElementById(
-"jointDisplay"
-).innerHTML = "";
-
-}
+.then(() => {
 
 localStorage.setItem(
 "lastLogin",
@@ -957,43 +883,10 @@ new Date().toLocaleString()
 
 showPage("dashboard");
 
-}
-else{
+})
+.catch((error) => {
 
 alert("Invalid Username or Password");
-
-}
-function loadTransactions(){
-
-let list =
-document.getElementById(
-"transactions"
-);
-
-let transactions =
-JSON.parse(
-localStorage.getItem("transactions")
-) || [];
-
-if(transactions.length==0){
-
-list.innerHTML =
-"<li>No Transactions Yet</li>";
-
-return;
-
-}
-
-list.innerHTML="";
-
-transactions.forEach(function(item){
-
-let li =
-document.createElement("li");
-
-li.innerHTML=item;
-
-list.appendChild(li);
 
 });
 
